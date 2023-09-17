@@ -1,9 +1,13 @@
 import numpy as np
 import cv2
-from scipy.misc import imresize
+# from scipy.misc import imresize # imresize function has been removed from SciPy 1.0.0
+from skimage.transform import resize 
 from skimage.morphology import erosion
 import matplotlib.pyplot as plt
-from .utils import partialDerivative, search, drawcircle
+# from .utils import partialDerivative, search, drawcircle
+from utils import partialDerivative, search, drawcircle # FIXME: error related to relative imports
+import os
+
 
 # this function returns the indexes that satisfy certain function func
 indices = lambda a, func: [i for (i, val) in enumerate(a) if func(val)]
@@ -12,7 +16,7 @@ indices = lambda a, func: [i for (i, val) in enumerate(a) if func(val)]
 rgb2gray = lambda x: np.dot(x[..., :3], [0.2989, 0.5870, 0.1140])
 
 #  This function replicates the matlab function im2double
-im2double = lambda im: im.astype(np.float) / np.iinfo(im.dtype).max  # Divide all values by the largest possible value in the datatype
+im2double = lambda im: im.astype(float) / np.iinfo(im.dtype).max  # Divide all values by the largest possible value in the datatype
 
 
 def irisSeg(filename, rmin, rmax, view_output=False):
@@ -40,7 +44,8 @@ def irisSeg(filename, rmin, rmax, view_output=False):
 
     pimage = image  # store the image for display
 
-    image = imresize(image, 1 / scale)
+    # image = imresize(image, 1 / scale)
+    image = resize(image, (image.shape[0] // scale, image.shape[1] // scale))
 
     image = erosion(image)
 
@@ -98,6 +103,8 @@ def irisSeg(filename, rmin, rmax, view_output=False):
         # displaying the segmented image
         plt.imshow(segemented_img)
         plt.show()
+
+        cv2.imwrite("example.jpg", (segemented_img * 255).astype(np.uint8))
     return coord_iris, coord_pupil, segemented_img
 
 

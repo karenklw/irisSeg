@@ -61,30 +61,53 @@ def NormalLineIntegral(image, coord, r, n, feature):
     if not isinstance(y, np.ndarray):
         y = np.array(y)
 
-    if np.any(x >= rows) or np.any(y >= cols) or np.any(x <= 1) or np.any(y <= 1):
-        # This process returns L=0 for any circle that does not fit inside the image
+    # if np.any(x >= rows) or np.any(y >= cols) or np.any(x <= 1) or np.any(y <= 1):
+    #     # This process returns L=0 for any circle that does not fit inside the image
+    #     return 0
+
+
+    # Perform boundary checks before accessing pixel values
+    valid_indices = (x >= 0) & (x < rows) & (y >= 0) & (y < cols)
+
+    if not np.all(valid_indices):
+        # If any coordinates fall outside the image boundaries, return 0
         return 0
+    
+
     if feature == 'pupil':
         s = 0
         for i in np.arange(0, n - 1):
-            val = image[_round(x[i]), _round(y[i])]
-            s += val
+            if valid_indices[i]:
+                val = image[_round(x[i]), _round(y[i])]
+                s += val
         line = s / n
         return line
 
     elif feature == 'iris':
         s = 0
         for i in np.arange(1, _round(n / 8)):
-            val = image[_round(x[i]), _round(y[i])]
-            s += val
+            if valid_indices[i]:
+                val = image[_round(x[i]), _round(y[i])]
+                s += val
+            else:
+                print(f"Invalid indices: x[{i}] = {x[i]}, y[{i}] = {y[i]}")
+
 
         for i in np.arange(_round(3 * n / 8) + 1, _round((5 * n / 8))):
-            val = image[_round(x[i]), _round(y[i])]
-            s += val
+            if valid_indices[i]:
+                val = image[_round(x[i]), _round(y[i])]
+                s += val
+            else:
+                print(f"Invalid indices: x[{i}] = {x[i]}, y[{i}] = {y[i]}")
+
 
         for i in np.arange(np.round((7 * n / 8)).astype(np.uint8) + 1, n - 1):
-            val = image[_round(x[i]), _round(y[i])]
-            s += val
+            if valid_indices[i]:
+                val = image[_round(x[i]), _round(y[i])]
+                s += val
+            else:
+                print(f"Invalid indices: x[{i}] = {x[i]}, y[{i}] = {y[i]}")
+
 
         line = (2 * s) / n
         return line
