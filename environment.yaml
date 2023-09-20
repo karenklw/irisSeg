@@ -1,0 +1,29 @@
+name: irisseg
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - numpy==1.20.3
+  - pandas
+  - scikit-learn
+  - matplotlib==3.4.2
+  - seaborn
+  - jupyter
+  - notebook
+  - scipy==1.6.3
+  - pip
+  - cycler==0.10.0
+  - decorator==4.4.2
+  - imageio==2.9.0
+  # - irisSeg==0.2
+  - kiwisolver==1.3.1
+  - networkx==2.5.1
+  # - opencv-python==4.5.2.52
+  - Pillow==9.0.1
+  - pyparsing==2.4.7
+  - python-dateutil==2.8.1
+  - PyWavelets==1.1.1
+  - scikit-image==0.18.1
+  - six==1.16.0
+  - tifffile==2021.4.8
